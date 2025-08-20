@@ -6,44 +6,45 @@
 #    By: aautret <aautret@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/20 14:15:18 by aautret           #+#    #+#              #
-#    Updated: 2025/08/20 14:58:58 by aautret          ###   ########.fr        #
+#    Updated: 2025/08/20 17:03:12 by aautret          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME	:= minitalk
+NAME_SERVER := server
+# NAME_CLIENT := client
+CC          := cc
+CFLAGS      := -Wall -Wextra -Werror -I. -I printf
 
-CC		:= gcc
-CFLAGS	:= -Wall -Wextra -Werror -I. -Iprintf
+PRINTF_SRCS   := printf/ft_printf.c \
+				printf/ft_convert.c \
+				printf/ft_convert_base.c
+SERVER_SRCS   := serveur.c
+# CLIENT_SRCS   := client.c
 
-# ————————————— SOURCES FT_PRINTF —————————————
-PRINTF_SRCS := \
-	printf/ft_printf.c \
-	printf/ft_convert.c \
-	printf/ft_convert_base.c
+SRCS_SERVER   := $(SERVER_SRCS) $(PRINTF_SRCS)
+# SRCS_CLIENT   := $(CLIENT_SRCS) $(PRINTF_SRCS)
 
-SERVEUR_SRCS := \
-	serveur.c \
-
-
-
-SRCS	:= push_swap.c $(PRINTF_SRCS) $(SERVEUR_SRCS)
-OBJS	:= $(SRCS:.c=.o)
+OBJS_SERVER   := $(SRCS_SERVER:.c=.o)
+# OBJS_CLIENT   := $(SRCS_CLIENT:.c=.o)
 
 
-all: $(NAME)
+all: $(NAME_SERVER) #$(NAME_CLIENT)
 
-# ————————————— RÈGLE GÉNÉRIQUE .c → .o —————————————
-# Chaque .c dépend de push_swap.h et ft_printf.h
-%.o: %.c push_swap.h printf/ft_printf.h
+$(NAME_SERVER): $(OBJS_SERVER)
+	$(CC) $(CFLAGS) -o $@ $^
+
+# $(NAME_CLIENT): $(OBJS_CLIENT)
+# 	$(CC) $(CFLAGS) -o $@ $^
+
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# ————————————— NETTOYAGE —————————————
 clean:
-	$(RM) $(OBJS)
+	rm -f $(OBJS_SERVER)
 
 fclean: clean
-	$(RM) $(NAME) test_sa
+	rm -f $(NAME_SERVER)
 
 re: fclean all
 
-.PHONY: all clean fclean re test_sa
+.PHONY: all clean fclean re
