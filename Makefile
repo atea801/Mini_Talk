@@ -6,7 +6,7 @@
 #    By: aautret <aautret@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/20 14:15:18 by aautret           #+#    #+#              #
-#    Updated: 2025/08/20 14:21:39 by aautret          ###   ########.fr        #
+#    Updated: 2025/08/20 14:58:58 by aautret          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,12 @@ PRINTF_SRCS := \
 	printf/ft_convert.c \
 	printf/ft_convert_base.c
 
+SERVEUR_SRCS := \
+	serveur.c \
 
-SRCS	:= push_swap.c $(PRINTF_SRCS)
+
+
+SRCS	:= push_swap.c $(PRINTF_SRCS) $(SERVEUR_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 
 
