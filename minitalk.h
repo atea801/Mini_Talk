@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:28 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/20 16:57:17 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/20 19:48:24 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <unistd.h> //write, pause, getpid
 # include <stdlib.h> //exit
 # include <stdio.h>
+# include <stdint.h> //uint32_t
 
 /**
  * @brief État global : 1 globale par programme (regroupe tout dans une struct
