@@ -6,11 +6,12 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 19:33:46 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/20 20:02:09 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:57:41 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
 
 /**
  * @brief transforme un bit en un signal envoye au serveur
@@ -18,7 +19,7 @@
  * @param pid
  * @param bit
  */
-void	send_bit(__pid_t pid, int bit)
+void	send_bit(pid_t pid, int bit)
 {
 	if (bit != 1 && bit != 0)
 		return ;
@@ -36,7 +37,7 @@ void	send_bit(__pid_t pid, int bit)
  * @param pid
  * @param c
  */
-void	send_byte(__pid_t pid, unsigned char c)
+void	send_byte(pid_t pid, unsigned char c)
 {
 	int	i;
 	int	bit;
@@ -58,7 +59,7 @@ void	send_byte(__pid_t pid, unsigned char c)
  * @param pid
  * @param len
  */
-void	sen_u32_be(__pid_t pid, uint32_t len)
+void	sen_u32_be(pid_t pid, uint32_t len)
 {
 	uint32_t		n;
 	unsigned char	b3;
@@ -78,6 +79,32 @@ void	sen_u32_be(__pid_t pid, uint32_t len)
 	send_byte(pid, b0);
 }
 
+void	send_message(pid_t pid, const char *s)
+{
+	size_t		len;
+	uint32_t	len32;
+	size_t		i;
+
+	len = 0;
+	if (s == NULL)
+	len = 0;
+	else
+	len = ft_strlen(s);
+	if (len > UINT32_MAX)
+	{
+		ft_printf("Message trop long\n");
+		exit(1);
+	}
+	len32 = (uint32_t)len;
+	sen_u32_be(pid, len32);
+	i = 0;
+	while (i < len32)
+	{
+		send_byte(pid, (unsigned char)s[i]);
+		i++;
+	}
+}
+
 /**
  * @brief
  * - condition 1 : verifie si le pid est pas interdit (-1)
@@ -91,7 +118,7 @@ void	sen_u32_be(__pid_t pid, uint32_t len)
  *
  * @param pid
  */
-void	check_pid(__pid_t pid)
+void	check_pid(pid_t pid)
 {
 	if (pid <= 0)
 	{
