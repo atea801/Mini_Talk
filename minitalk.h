@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:28 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/20 19:48:24 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/21 19:57:41 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 # define MINITALK_H
 
 # include "ft_printf.h"
-# include <signal.h> // sigaction, SIGUSR1/2, sigemptyset
-# include <unistd.h> //write, pause, getpid
-# include <stdlib.h> //exit
-# include <stdio.h>
-# include <stdint.h> //uint32_t
+# include "libft.h"
+# include <sys/types.h>   // pid_t
+# include <signal.h>      // struct sigaction, sigaction, sigemptyset, SA_*
+# include <unistd.h>      // write, pause, getpid, usleep
+# include <stdint.h>      // uint32_t
+# include <stdlib.h>      // exit
+# include <errno.h>       // errno, ESRCH
 
 /**
  * @brief État global : 1 globale par programme (regroupe tout dans une struct
@@ -37,5 +39,11 @@ typedef struct s_srv
 extern t_srv	g_srv;
 
 void	handler(int signum);
+
+void	send_bit(pid_t pid, int bit);
+void	send_byte(pid_t pid, unsigned char c);
+void	sen_u32_be(pid_t pid, uint32_t len);
+void	send_message(pid_t pid, const char *s);
+void	check_pid(pid_t pid);
 
 #endif
