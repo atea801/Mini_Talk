@@ -6,19 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 16:09:27 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:10:45 by aautret          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   serveur_utils.c                                    :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/22 13:23:43 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:43:58 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +42,24 @@ void	reset_state(t_reception *rx)
 	rx->current_byte = 0;
 	rx->bit_index = 0;
 	rx->client_pid = 0;
+}
+
+/**
+ * @brief Initialise le buffer après réception complète de la taille
+ */
+static void	init_content_phase(t_reception *rx)
+{
+	rx->buffer = malloc(rx->expected_size + 1);
+	if (!rx->buffer)
+	{
+		reset_state(rx);
+		return ;
+	}
+	rx->buffer[rx->expected_size] = '\0';
+	rx->index = 0;
+	rx->current_byte = 0;
+	rx->bit_index = 0;
+	rx->phase = 1;
 }
 
 /**
@@ -98,17 +104,7 @@ void	handle_size_bit(t_reception *rx, int bit)
 				reset_state(rx);
 				return ;
 			}
-			rx->buffer = malloc(rx->expected_size + 1);
-			if (!rx->buffer)
-			{
-				reset_state(rx);
-				return ;
-			}
-			rx->buffer[rx->expected_size] = '\0';
-			rx->index = 0;
-			rx->current_byte = 0;
-			rx->bit_index = 0;
-			rx->phase = 1;
+			init_content_phase(rx);
 		}
 	}
 }

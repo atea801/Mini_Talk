@@ -128,15 +128,23 @@ void	sen_u32_be(pid_t pid, uint32_t len)
 	send_byte(pid, b0);
 }
 
+/**
+ * @brief Attend la confirmation finale du serveur
+ */
+static void	wait_for_confirmation(void)
+{
+	while (!g_message_confirmed)
+		pause();
+	ft_printf("✅ Message reçu par le serveur !\n");
+}
+
 void	send_message(pid_t pid, const char *s)
 {
 	size_t		len;
 	uint32_t	len32;
 	size_t		i;
 
-	// Configuration du handler d'accusé de réception
 	setup_ack_handler();
-
 	len = 0;
 	if (s == NULL)
 		len = 0;
@@ -155,15 +163,8 @@ void	send_message(pid_t pid, const char *s)
 		send_byte(pid, (unsigned char)s[i]);
 		i++;
 	}
-
-	// Attendre la confirmation de message complet
-	while (!g_message_confirmed)
-		pause();
-
-	ft_printf("✅ Message reçu par le serveur !\n");
-}
-
-/**
+	wait_for_confirmation();
+}/**
  * @brief
  * - condition 1 : verifie si le pid est pas interdit (-1)
  * ou autre comportement (0)

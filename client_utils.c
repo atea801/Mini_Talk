@@ -118,9 +118,7 @@ void	send_message(pid_t pid, const char *s)
 	uint32_t	len32;
 	size_t		i;
 
-	// Configuration du handler d'accusé de réception
 	setup_ack_handler();
-	
 	len = 0;
 	if (s == NULL)
 		len = 0;

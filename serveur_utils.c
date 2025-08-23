@@ -45,6 +45,24 @@ void	reset_state(t_reception *rx)
 }
 
 /**
+ * @brief Initialise le buffer après réception complète de la taille
+ */
+static void	init_content_phase(t_reception *rx)
+{
+	rx->buffer = malloc(rx->expected_size + 1);
+	if (!rx->buffer)
+	{
+		reset_state(rx);
+		return ;
+	}
+	rx->buffer[rx->expected_size] = '\0';
+	rx->index = 0;
+	rx->current_byte = 0;
+	rx->bit_index = 0;
+	rx->phase = 1;
+}
+
+/**
  * @brief Traite un bit reçu pour la phase de récupération de la taille
  *
  * - ajoute le bit reçu (0 ou 1) à la taille attendue (`expected_size`)
@@ -90,27 +108,12 @@ void	handle_size_bit(t_reception *rx, int bit)
 			if (rx->expected_size == 0)
 			{
 				ft_printf("\n");
-				// Envoyer confirmation pour message vide
 				if (rx->client_pid > 0)
 					kill(rx->client_pid, SIGUSR2);
 				reset_state(rx);
 				return;
 			}
-
-			// Allouer le buffer pour le message (+1 pour \0)
-			rx->buffer = malloc(rx->expected_size + 1);
-			if (!rx->buffer)
-			{
-				reset_state(rx);
-				return;
-			}
-			rx->buffer[rx->expected_size] = '\0';
-
-			// Reset pour la phase contenu
-			rx->index = 0;
-			rx->current_byte = 0;
-			rx->bit_index = 0;
-			rx->phase = 1;  // Passer à la phase contenu
+			init_content_phase(rx);
 		}
 	}
 }
