@@ -56,9 +56,11 @@ void	send_byte(pid_t pid, unsigned char c);
 void	sen_u32_be(pid_t pid, uint32_t len);
 void	send_message(pid_t pid, const char *s);
 void	check_pid(pid_t pid);
+void	ack_handler(int signum);
+void	setup_ack_handler(void);
 
 //SERVEUR
-void	simple_handler(int signo);
+void	advanced_handler(int signo, siginfo_t *info, void *ucontext);
 void	set_sigactions(void);
 
 void	reset_state(t_reception *rx);
