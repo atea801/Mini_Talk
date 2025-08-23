@@ -47,13 +47,34 @@ $(NAME_CLIENT): $(OBJS_CLIENT) $(LIBFT)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS_SERVER) $(OBJS_CLIENT)
+	rm -f $(OBJS_SERVER) $(OBJS_CLIENT) $(OBJS_SERVER_BONUS) $(OBJS_CLIENT_BONUS)
 
 fclean: clean
-	rm -f $(NAME_SERVER) $(NAME_CLIENT)
+	rm -f $(NAME_SERVER) $(NAME_CLIENT) $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+# Bonus targets
+NAME_SERVER_BONUS := server_bonus
+NAME_CLIENT_BONUS := client_bonus
+
+SERVER_BONUS_SRCS := bonus/serveur_bonus.c bonus/serveur_utils.bonus.c
+CLIENT_BONUS_SRCS := bonus/client_bonus.c bonus/client_utils_bonus.c
+
+SRCS_SERVER_BONUS := $(SERVER_BONUS_SRCS) $(PRINTF_SRCS)
+SRCS_CLIENT_BONUS := $(CLIENT_BONUS_SRCS) $(PRINTF_SRCS)
+
+OBJS_SERVER_BONUS := $(SRCS_SERVER_BONUS:.c=.o)
+OBJS_CLIENT_BONUS := $(SRCS_CLIENT_BONUS:.c=.o)
+
+bonus: $(LIBFT) $(NAME_SERVER_BONUS) $(NAME_CLIENT_BONUS)
+
+$(NAME_SERVER_BONUS): $(OBJS_SERVER_BONUS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+
+$(NAME_CLIENT_BONUS): $(OBJS_CLIENT_BONUS) $(LIBFT)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBFT)
+
+.PHONY: all clean fclean re bonus
 
