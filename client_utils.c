@@ -12,6 +12,31 @@
 
 #include "minitalk.h"
 
+// Variable globale pour l'accusé de réception
+volatile sig_atomic_t g_ack_received = 0;
+
+/**
+ * @brief Handler pour recevoir l'accusé de réception du serveur
+ */
+void	ack_handler(int signum)
+{
+	(void)signum;
+	g_ack_received = 1;
+}
+
+/**
+ * @brief Configure le handler d'accusé de réception
+ */
+void	setup_ack_handler(void)
+{
+	struct sigaction	sa;
+
+	sa.sa_handler = ack_handler;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+	sigaction(SIGUSR1, &sa, NULL);  // Le serveur répond avec SIGUSR1
+}
+
 
 /**
  * @brief transforme un bit en un signal envoye au serveur
@@ -23,11 +48,19 @@ void	send_bit(pid_t pid, int bit)
 {
 	if (bit != 1 && bit != 0)
 		return ;
+	
+	// Reset du flag d'accusé de réception
+	g_ack_received = 0;
+	
+	// Envoi du signal
 	if (bit == 0)
 		kill(pid, SIGUSR1);
 	else if (bit == 1)
 		kill(pid, SIGUSR2);
-	usleep(150);  // Délai plus sûr pour éviter la perte de signaux
+	
+	// Attendre l'accusé de réception du serveur
+	while (!g_ack_received)
+		pause();  // Suspend jusqu'au signal d'accusé de réception
 }
 
 /**
@@ -85,11 +118,14 @@ void	send_message(pid_t pid, const char *s)
 	uint32_t	len32;
 	size_t		i;
 
+	// Configuration du handler d'accusé de réception
+	setup_ack_handler();
+	
 	len = 0;
 	if (s == NULL)
-	len = 0;
+		len = 0;
 	else
-	len = ft_strlen(s);
+		len = ft_strlen(s);
 	if (len > UINT32_MAX)
 	{
 		ft_printf("Message trop long\n");
