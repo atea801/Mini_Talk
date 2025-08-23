@@ -16,12 +16,16 @@
 static t_reception	g_srv;
 
 /**
- * @brief Handler principal des signaux SIGUSR1/SIGUSR2
- * Convertit les signaux en bits et route vers les bonnes fonctions
+ * @brief Handler avancé avec accusé de réception
+ * Convertit les signaux en bits et envoie une confirmation au client
  */
-void	simple_handler(int signo)
+void	advanced_handler(int signo, siginfo_t *info, void *ucontext)
 {
-	int	bit;
+	int		bit;
+	pid_t	client_pid;
+
+	(void)ucontext;
+	client_pid = info->si_pid;  // Récupérer le PID du client
 
 	if (signo == SIGUSR1)
 		bit = 0;
@@ -30,10 +34,14 @@ void	simple_handler(int signo)
 	else
 		return ;
 
+	// Traitement du bit
 	if (g_srv.phase == 0)
 		handle_size_bit(&g_srv, bit);
 	else if (g_srv.phase == 1)
 		handle_content_bit(&g_srv, bit);
+	
+	// Envoyer accusé de réception au client
+	kill(client_pid, SIGUSR1);
 }
 
 /**
@@ -48,17 +56,15 @@ void	set_sigactions(void)
 {
 	struct sigaction	sa;
 
-	sa.sa_handler = simple_handler;  // Utiliser un handler simple d'abord
+	sa.sa_sigaction = advanced_handler;  // Utiliser le handler avancé
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-
+	sa.sa_flags = SA_SIGINFO;  // Activer les infos sur l'émetteur
+	
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
 		_exit(1);
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)
 		_exit(1);
 }
-
-
 int	main(void)
 {
 	ft_printf("Serveur PID: %d\n", getpid());
