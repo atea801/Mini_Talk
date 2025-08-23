@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:23:43 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:24:33 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	reset_state(t_reception *rx)
 	rx->phase = 0;
 	rx->current_byte = 0;
 	rx->bit_index = 0;
+	rx->client_pid = 0;
 }
 
 /**
@@ -89,6 +90,9 @@ void	handle_size_bit(t_reception *rx, int bit)
 			if (rx->expected_size == 0)
 			{
 				ft_printf("\n");
+				// Envoyer confirmation pour message vide
+				if (rx->client_pid > 0)
+					kill(rx->client_pid, SIGUSR2);
 				reset_state(rx);
 				return;
 			}
@@ -136,6 +140,9 @@ void	flush_byte_if_ready(t_reception *rx)
 	if (rx->index == rx->expected_size)
 	{
 		ft_printf("%s\n", rx->buffer);
+		// Envoyer confirmation de message complet avec SIGUSR2
+		if (rx->client_pid > 0)
+			kill(rx->client_pid, SIGUSR2);
 		reset_state(rx);
 	}
 }

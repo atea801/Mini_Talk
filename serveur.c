@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:32 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ void	advanced_handler(int signo, siginfo_t *info, void *ucontext)
 	(void)ucontext;
 	client_pid = info->si_pid;  // Récupérer le PID du client
 
+	// Sauvegarder le PID du client dans la structure
+	g_srv.client_pid = client_pid;
+
 	if (signo == SIGUSR1)
 		bit = 0;
 	else if (signo == SIGUSR2)
@@ -39,7 +42,7 @@ void	advanced_handler(int signo, siginfo_t *info, void *ucontext)
 		handle_size_bit(&g_srv, bit);
 	else if (g_srv.phase == 1)
 		handle_content_bit(&g_srv, bit);
-	
+
 	// Envoyer accusé de réception au client
 	kill(client_pid, SIGUSR1);
 }
@@ -59,7 +62,7 @@ void	set_sigactions(void)
 	sa.sa_sigaction = advanced_handler;  // Utiliser le handler avancé
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;  // Activer les infos sur l'émetteur
-	
+
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
 		_exit(1);
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)

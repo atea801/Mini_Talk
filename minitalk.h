@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:28 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_reception {
 	unsigned char	current_byte;
 	uint32_t		index;
 	unsigned char	bit_index;
+	pid_t			client_pid;  // PID du client pour confirmation
 }	t_reception;
 
 /**
