@@ -6,14 +6,13 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:28 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:36:35 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
 # define MINITALK_H
 
-/* Définitions POSIX - OBLIGATOIRES avant les includes pour struct sigaction complet */
 # define _POSIX_C_SOURCE 200809L
 # define _GNU_SOURCE
 
@@ -38,7 +37,7 @@ typedef struct s_reception {
 	unsigned char	current_byte;
 	uint32_t		index;
 	unsigned char	bit_index;
-	pid_t			client_pid;  // PID du client pour confirmation
+	pid_t			client_pid;
 }	t_reception;
 
 /**
@@ -49,7 +48,6 @@ typedef struct s_srv
 	volatile sig_atomic_t	got_usr1;
 	volatile sig_atomic_t	got_usr2;
 }	t_srv;
-
 
 //CLIENT
 void	send_bit(pid_t pid, int bit);

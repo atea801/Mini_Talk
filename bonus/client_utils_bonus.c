@@ -6,27 +6,14 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 16:11:05 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:56:31 by aautret          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   client_utils.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/20 19:33:46 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:43:38 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-// Variable globale pour l'accusé de réception
-volatile sig_atomic_t g_ack_received = 0;
-volatile sig_atomic_t g_message_confirmed = 0;
+volatile sig_atomic_t	g_ack_received = 0;
+volatile sig_atomic_t	g_message_confirmed = 0;
 
 /**
  * @brief Handler pour recevoir l'accusé de réception du serveur
@@ -34,25 +21,10 @@ volatile sig_atomic_t g_message_confirmed = 0;
 void	ack_handler(int signum)
 {
 	if (signum == SIGUSR1)
-		g_ack_received = 1;  // Accusé de réception de bit
+		g_ack_received = 1;
 	else if (signum == SIGUSR2)
-		g_message_confirmed = 1;  // Confirmation de message complet
+		g_message_confirmed = 1;
 }
-
-/**
- * @brief Configure le handler d'accusé de réception
- */
-void	setup_ack_handler(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_handler = ack_handler;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
-	sigaction(SIGUSR1, &sa, NULL);  // Accusé de réception de bit
-	sigaction(SIGUSR2, &sa, NULL);  // Confirmation de message complet
-}
-
 
 /**
  * @brief transforme un bit en un signal envoye au serveur
@@ -64,19 +36,13 @@ void	send_bit(pid_t pid, int bit)
 {
 	if (bit != 1 && bit != 0)
 		return ;
-
-	// Reset du flag d'accusé de réception
 	g_ack_received = 0;
-
-	// Envoi du signal
 	if (bit == 0)
 		kill(pid, SIGUSR1);
 	else if (bit == 1)
 		kill(pid, SIGUSR2);
-
-	// Attendre l'accusé de réception du serveur
 	while (!g_ack_received)
-		pause();  // Suspend jusqu'au signal d'accusé de réception
+		pause();
 }
 
 /**
@@ -121,7 +87,6 @@ void	sen_u32_be(pid_t pid, uint32_t len)
 	b2 = (n >> 16) & 0xFF;
 	b1 = (n >> 8) & 0xFF;
 	b0 = (n >> 0) & 0xFF;
-
 	send_byte(pid, b3);
 	send_byte(pid, b2);
 	send_byte(pid, b1);
@@ -136,60 +101,4 @@ static void	wait_for_confirmation(void)
 	while (!g_message_confirmed)
 		pause();
 	ft_printf("✅ Message reçu par le serveur !\n");
-}
-
-void	send_message(pid_t pid, const char *s)
-{
-	size_t		len;
-	uint32_t	len32;
-	size_t		i;
-
-	setup_ack_handler();
-	len = 0;
-	if (s == NULL)
-		len = 0;
-	else
-		len = ft_strlen(s);
-	if (len > UINT32_MAX)
-	{
-		ft_printf("Message trop long\n");
-		exit(1);
-	}
-	len32 = (uint32_t)len;
-	sen_u32_be(pid, len32);
-	i = 0;
-	while (i < len32)
-	{
-		send_byte(pid, (unsigned char)s[i]);
-		i++;
-	}
-	wait_for_confirmation();
-}/**
- * @brief
- * - condition 1 : verifie si le pid est pas interdit (-1)
- * ou autre comportement (0)
- *
- * - condition 2 : verifie si on a les autorisations d'y envoyer un signal
- * - ESRCH => le PID n'existe pas
- *
- * = test d'accessibilite et d'exitance du rpocesseur serveur
- *
- *
- * @param pid
- */
-void	check_pid(pid_t pid)
-{
-	if (pid <= 0)
-	{
-		ft_printf("Veuillez choisir un autre PID !\n");
-		exit (1);
-	}
-	if (kill(pid, 0) == -1)
-	{
-		if (errno == ESRCH)
-		{
-			write(2, "Erreur: PID inexistant\n", 23);
-			exit(1);
-		}
-	}
 }

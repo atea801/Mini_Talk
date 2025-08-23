@@ -6,14 +6,12 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:38 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:06:47 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:39:19 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-
-// Variable globale - persiste entre les appels du handler
 static t_reception	g_srv;
 
 /**
@@ -56,7 +54,6 @@ void	set_sigactions(void)
 	sa.sa_sigaction = advanced_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_SIGINFO;
-
 	if (sigaction(SIGUSR1, &sa, NULL) == -1)
 		_exit(1);
 	if (sigaction(SIGUSR2, &sa, NULL) == -1)
@@ -70,6 +67,5 @@ int	main(void)
 	set_sigactions();
 	while (1)
 		pause();
-
 	return (0);
 }

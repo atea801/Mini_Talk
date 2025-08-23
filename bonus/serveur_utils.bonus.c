@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 16:09:27 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:56:31 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 17:39:37 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ void	flush_byte_if_ready(t_reception *rx)
 	rx->index++;
 	rx->current_byte = 0;
 	rx->bit_index = 0;
-
 	if (rx->index == rx->expected_size)
 	{
 		ft_printf("%s\n", rx->buffer);
@@ -160,6 +159,5 @@ void	handle_content_bit(t_reception *rx, int bit)
 {
 	rx->current_byte = (rx->current_byte << 1) | bit;
 	rx->bit_index++;
-
 	flush_byte_if_ready(rx);
 }
