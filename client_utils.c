@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 19:33:46 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:54:42 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:59:48 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,8 @@ void	setup_ack_handler(void)
 	sa.sa_handler = ack_handler;
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
-	sigaction(SIGUSR1, &sa, NULL);  // Le serveur répond avec SIGUSR1
+	sigaction(SIGUSR1, &sa, NULL);
 }
-
 
 /**
  * @brief transforme un bit en un signal envoye au serveur
@@ -48,19 +47,13 @@ void	send_bit(pid_t pid, int bit)
 {
 	if (bit != 1 && bit != 0)
 		return ;
-
-	// Reset du flag d'accusé de réception
 	g_ack_received = 0;
-
-	// Envoi du signal
 	if (bit == 0)
 		kill(pid, SIGUSR1);
 	else if (bit == 1)
 		kill(pid, SIGUSR2);
-
-	// Attendre l'accusé de réception du serveur
 	while (!g_ack_received)
-		pause();  // Suspend jusqu'au signal d'accusé de réception
+		pause();
 }
 
 /**
@@ -105,7 +98,6 @@ void	sen_u32_be(pid_t pid, uint32_t len)
 	b2 = (n >> 16) & 0xFF;
 	b1 = (n >> 8) & 0xFF;
 	b0 = (n >> 0) & 0xFF;
-
 	send_byte(pid, b3);
 	send_byte(pid, b2);
 	send_byte(pid, b1);

@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:23:43 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:00:55 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:58:13 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,32 +86,23 @@ static void	init_content_phase(t_reception *rx)
  */
 void	handle_size_bit(t_reception *rx, int bit)
 {
-	// Construire l'octet bit par bit (MSB en premier)
 	rx->current_byte = (rx->current_byte << 1) | bit;
 	rx->bit_index++;
-
-	// Quand on a 8 bits = 1 octet complet
 	if (rx->bit_index == 8)
 	{
-		// Construire la taille en big-endian (décalage + nouvel octet)
 		rx->expected_size = (rx->expected_size << 8) | rx->current_byte;
-		rx->expected_bits += 8;  // Compter les bits traités
-
-		// Reset pour le prochain octet
+		rx->expected_bits += 8;
 		rx->current_byte = 0;
 		rx->bit_index = 0;
-
-		// Si on a reçu les 4 octets de la taille (32 bits)
 		if (rx->expected_bits == 32)
 		{
-			// Cas spécial : message vide
 			if (rx->expected_size == 0)
 			{
 				ft_printf("\n");
 				if (rx->client_pid > 0)
 					kill(rx->client_pid, SIGUSR2);
 				reset_state(rx);
-				return;
+				return ;
 			}
 			init_content_phase(rx);
 		}
@@ -139,11 +130,9 @@ void	flush_byte_if_ready(t_reception *rx)
 	rx->index++;
 	rx->current_byte = 0;
 	rx->bit_index = 0;
-
 	if (rx->index == rx->expected_size)
 	{
 		ft_printf("%s\n", rx->buffer);
-		// Envoyer confirmation de message complet avec SIGUSR2
 		if (rx->client_pid > 0)
 			kill(rx->client_pid, SIGUSR2);
 		reset_state(rx);
@@ -170,6 +159,5 @@ void	handle_content_bit(t_reception *rx, int bit)
 {
 	rx->current_byte = (rx->current_byte << 1) | bit;
 	rx->bit_index++;
-
 	flush_byte_if_ready(rx);
 }
