@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 13:23:43 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 15:24:33 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,8 @@ void	flush_byte_if_ready(t_reception *rx)
 /**
  * @brief Ajoute un bit reçu à l’octet en cours de construction
  *
+ * - CONSTRUIRE L'OCTET BIT PAR BIT MSB EN PERMIER
+ *
  * - Cette fonction est appelée à chaque réception de bit pendant la phase
  * de contenu (phase 1). Le bit est inséré dans `current_byte` à la bonne
  * position.
@@ -156,10 +158,8 @@ void	flush_byte_if_ready(t_reception *rx)
  */
 void	handle_content_bit(t_reception *rx, int bit)
 {
-	// Construire l'octet bit par bit (MSB en premier)
 	rx->current_byte = (rx->current_byte << 1) | bit;
 	rx->bit_index++;
 
-	// Appeler flush quand 8 bits sont reçus
 	flush_byte_if_ready(rx);
 }
