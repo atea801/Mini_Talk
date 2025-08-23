@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 19:33:46 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:54:42 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,16 +48,16 @@ void	send_bit(pid_t pid, int bit)
 {
 	if (bit != 1 && bit != 0)
 		return ;
-	
+
 	// Reset du flag d'accusé de réception
 	g_ack_received = 0;
-	
+
 	// Envoi du signal
 	if (bit == 0)
 		kill(pid, SIGUSR1);
 	else if (bit == 1)
 		kill(pid, SIGUSR2);
-	
+
 	// Attendre l'accusé de réception du serveur
 	while (!g_ack_received)
 		pause();  // Suspend jusqu'au signal d'accusé de réception
