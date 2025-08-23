@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 16:11:05 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 16:11:37 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 16:40:25 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,11 +155,11 @@ void	send_message(pid_t pid, const char *s)
 		send_byte(pid, (unsigned char)s[i]);
 		i++;
 	}
-	
+
 	// Attendre la confirmation de message complet
 	while (!g_message_confirmed)
 		pause();
-	
+
 	ft_printf("✅ Message reçu par le serveur !\n");
 }
 
