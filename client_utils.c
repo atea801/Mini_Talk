@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 19:33:46 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/21 19:57:41 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	send_bit(pid_t pid, int bit)
 		kill(pid, SIGUSR1);
 	else if (bit == 1)
 		kill(pid, SIGUSR2);
-	usleep(200);
+	usleep(150);  // Délai plus sûr pour éviter la perte de signaux
 }
 
 /**
