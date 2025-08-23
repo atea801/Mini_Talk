@@ -6,7 +6,7 @@
 #    By: aautret <aautret@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/20 14:15:18 by aautret           #+#    #+#              #
-#    Updated: 2025/08/21 19:57:41 by aautret          ###   ########.fr        #
+#    Updated: 2025/08/23 15:07:58 by aautret          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ PRINTF_SRCS   := printf/ft_printf.c \
 LIBFT_DIR	= libft
 LIBFT		= $(LIBFT_DIR)/libft.a
 
-SERVER_SRCS   := serveur.c
+SERVER_SRCS   := serveur.c serveur_utils.c
 CLIENT_SRCS   := client.c client_utils.c
 
 SRCS_SERVER   := $(SERVER_SRCS) $(PRINTF_SRCS)
