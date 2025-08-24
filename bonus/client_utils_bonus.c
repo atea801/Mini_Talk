@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 16:11:05 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 17:43:38 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:52:17 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	sen_u32_be(pid_t pid, uint32_t len)
 /**
  * @brief Attend la confirmation finale du serveur
  */
-static void	wait_for_confirmation(void)
+void	wait_for_confirmation(void)
 {
 	while (!g_message_confirmed)
 		pause();
