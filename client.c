@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:24 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 17:33:39 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/24 21:07:48 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,19 @@ void	ack_handler(int signum)
 	g_ack_received = 1;
 }
 
+/**
+ * @brief Envoie une chaîne de caractères au serveur via signaux UNIX.
+ *
+ * La fonction envoie d’abord la longueur de la chaîne
+ * (uint32_t en big-endian), puis chaque octet du message.
+ * Si la chaîne est NULL, seule une longueur 0 est envoyée.
+ *
+ * @param pid PID du serveur destinataire.
+ * @param s   Chaîne C à transmettre (peut être NULL).
+ *
+ * @warning Quitte le programme si la taille dépasse UINT32_MAX.
+ *
+ */
 void	send_message(pid_t pid, const char *s)
 {
 	size_t		len;
