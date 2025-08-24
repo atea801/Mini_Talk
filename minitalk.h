@@ -6,7 +6,7 @@
 /*   By: aautret <aautret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:15:28 by aautret           #+#    #+#             */
-/*   Updated: 2025/08/23 17:36:35 by aautret          ###   ########.fr       */
+/*   Updated: 2025/08/24 20:52:39 by aautret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ typedef struct s_srv
 }	t_srv;
 
 //CLIENT
+extern volatile sig_atomic_t	g_ack_received;
+
 void	send_bit(pid_t pid, int bit);
 void	send_byte(pid_t pid, unsigned char c);
 void	sen_u32_be(pid_t pid, uint32_t len);
@@ -57,6 +59,8 @@ void	send_message(pid_t pid, const char *s);
 void	check_pid(pid_t pid);
 void	ack_handler(int signum);
 void	setup_ack_handler(void);
+void	wait_for_confirmation(void);
+
 
 //SERVEUR
 void	advanced_handler(int signo, siginfo_t *info, void *ucontext);
