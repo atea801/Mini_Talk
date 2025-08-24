@@ -12,9 +12,6 @@
 
 #include "minitalk.h"
 
-// Variable globale pour l'accusé de réception
-volatile sig_atomic_t	g_ack_received = 0;
-
 /**
  * @brief Configure le handler d'accusé de réception
  */
@@ -26,6 +23,7 @@ void	setup_ack_handler(void)
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = SA_RESTART;
 	sigaction(SIGUSR1, &sa, NULL);
+	sigaction(SIGUSR2, &sa, NULL);
 }
 
 /**
